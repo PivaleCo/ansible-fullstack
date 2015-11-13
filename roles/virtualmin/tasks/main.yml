@@ -1,0 +1,28 @@
+---
+
+- name: Install virtualmin.
+  script: ./roles/virtualmin/scripts/install.sh -y creates=/etc/webmin/miniserv.conf
+
+- name: Install root SSL certificate.
+  script: ./roles/virtualmin/scripts/create_self_signed_certificate_root.sh creates=/root/ssl/root.crt
+
+- name: Copy miniserv.conf
+  template:
+    src: "miniserv.conf"
+    dest: "{{ webmin_path }}/miniserv.conf"
+  notify: restart webmin
+
+- name: Set miniserv.conf webmin version
+  script: ./roles/virtualmin/scripts/set_webmin_version.sh
+
+- name: Disable awstats, webalizer, mailman
+  script: ./roles/virtualmin/scripts/disable_virtualmin_features.sh
+
+- name: Create prod virtual-server
+  script: ./roles/virtualmin/scripts/create_prod.sh creates=/home/prod
+
+- name: Start the webmin service.
+  service:
+    name: webmin
+    state: started
+    enabled: yes
