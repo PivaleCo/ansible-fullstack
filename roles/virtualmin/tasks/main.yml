@@ -1,7 +1,7 @@
 ---
 
 - name: Install virtualmin.
-  script: ./roles/virtualmin/scripts/install.sh -y creates=/etc/webmin/miniserv.conf
+  script: ./roles/virtualmin/scripts/virtualmin-install.sh -y creates=/etc/webmin/miniserv.conf
 
 - name: Install root SSL certificate.
   script: ./roles/virtualmin/scripts/create_self_signed_certificate_root.sh creates=/root/ssl/root.crt

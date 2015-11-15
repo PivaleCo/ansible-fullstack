@@ -1,2 +1,8 @@
-[root]
-fullstack.reallifedigital.com
+[prod]
+fullstack.reallifedigital.com   ansible_ssh_user=root
+
+[dev]
+
+[multi:children]
+prod
+dev
