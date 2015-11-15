@@ -50,10 +50,10 @@ cp example.hosts hosts
 nano hosts
 ```
 
-### Run the playbook
+### Run the setup playbook
 
 ```
-ansible-playbook playbook.yml
+ansible-playbook setup.yml
 ```
 
 Check for errors in the PLAY RECAP
@@ -62,8 +62,27 @@ Check for errors in the PLAY RECAP
 
 ```
 https://PROD_HOST:12340
-https://DEV_HOST:12340
+https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventory file)
 ```
 
 * Set whatever parameters in the wizard you deem appropriate.
 * Set the MySQL root password to the same as the server's root password.
+* It's recommended to set "Password storage mode" to "Only store hashed passwords"
+
+## TODOS:
+* Create a virtual-dev role with stage and dev users
+* Stored hashed passwords at top level in a project level vars file (with example and gigignore for the referenced file)
+* Add docs in README.md on how to generate hashed passwords for updating that vars file
+* Add dotfiles to each host and user
+* Generate SSH keys for each enviroment and create playbook to pull copies of the keys locally so they can by copied to git configuration
+* Add contrib roles for redis, git, imagemagick to all hosts (or add to fullstack role if cleaner)
+* Create a project var to optionally install redis- update docs
+* Add tig, rake, curl etc to all hosts (in new fullstack role)
+* Setup up optional nginx to fullstack role and configure as needed (via docker?)
+* Set up optional installation of PHP 5.6 to fullstack role via PPA (via docker?)
+* In project vars set location of website git repo
+* Set up drush scripts in ~/.drush/scripts directories for push/pull between sites
+* Set up virtualmin backup configuration (new host) and provide backup options in project vars
+* Add heal script to setup playbook
+* Setup ufw for all hosts
+* Add apt-get update/upgrade playbook

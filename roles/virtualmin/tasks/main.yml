@@ -15,6 +15,9 @@
 - name: Set miniserv.conf webmin version
   script: ./roles/virtualmin/scripts/set_webmin_version.sh
 
+- name: Set bash as default shell
+  script: ./roles/virtualmin/scripts/bash_default_shell.sh
+
 - name: Disable awstats, webalizer, mailman
   script: ./roles/virtualmin/scripts/disable_virtualmin_features.sh
 
