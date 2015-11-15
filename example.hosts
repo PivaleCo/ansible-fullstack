@@ -1,3 +1,6 @@
+# If the dev host is the same as the prod host, then simply put the same
+# host name under each section.
+
 [prod]
 prod.EXAMPLE.COM ansible_ssh_user=root
 
