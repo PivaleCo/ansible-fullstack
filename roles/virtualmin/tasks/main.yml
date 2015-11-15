@@ -18,9 +18,6 @@
 - name: Disable awstats, webalizer, mailman
   script: ./roles/virtualmin/scripts/disable_virtualmin_features.sh
 
-- name: Create prod virtual-server
-  script: ./roles/virtualmin/scripts/create_prod.sh creates=/home/prod
-
 - name: Start the webmin service.
   service:
     name: webmin

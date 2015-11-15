@@ -1,4 +1,7 @@
 ---
-- hosts: prod
+- hosts: multi
   roles:
   - virtualmin
+- hosts: prod
+  roles:
+  - virtualmin-prod

@@ -1,0 +1,5 @@
+---
+
+- name: Create prod virtual-server
+  script: ./roles/virtualmin/scripts/create_prod.sh creates=/home/prod
+
