@@ -2,48 +2,36 @@
 
 - name: Install virtualmin.
   script: >
-    ./roles/virtualmin/scripts/virtualmin-install.sh -y
+    ../scripts/virtualmin-install.sh -y
     creates=/etc/webmin/miniserv.conf
 
 - name: Install root SSL certificate.
   script: >
-     ./roles/virtualmin/scripts/create_self_signed_certificate_root.sh
+     ../scripts/create_self_signed_certificate_root.sh
      creates=/root/ssl/root.crt
 
 - name: CHECK if webmin config is already updated from the standard
-  shell: grep 'port=12340' {{ webmin_path }}/miniserv.conf
+  shell: "grep 'port=12340' {{ webmin_path }}/miniserv.conf | wc -l"
   register: miniserv_conf
-  changed_when: "miniserv_conf.rc != 0"
+  changed_when: "miniserv_conf.stdout == '0'"
 
 - name: Copy miniserv.conf
   template:
     src: "miniserv.conf"
     dest: "{{ webmin_path }}/miniserv.conf"
-  changed_when: "miniserv_conf.rc != 0"
+  when: "miniserv_conf.stdout == '0'"
   notify: restart webmin
 
-#- name: CHECK if webmin version has been set
-#  command: grep MiniServ /etc/webmin/miniserv.conf
-#  register: webmin_version_set
-#  changed_when: false
-#  ignore_errors: yes
-
-- name: GET webmin version
-  shell: cat /etc/webmin/webmin/config | grep last_version_number | cut -d "=" -f2
+- name: Get webmin version
+  shell: cat {{ webmin_path }}/webmin/config | grep last_version_number | cut -d "=" -f2
   register: webmin_version
   changed_when: false
 
 - name: Set miniserv.conf webmin version
-  #script: ./roles/virtualmin/scripts/set_webmin_version.sh
-  #changed_when: "webmin_version_set.rc != 0"
   lineinfile: >
     dest=/etc/webmin/miniserv.conf
-    regexp='^server=MiniServ'
+    regexp='^server='
     line='server=MiniServ/{{ webmin_version.stdout }}'
-    create=yes
-    backrefs=yes
-    state=present
-  #changed_when: "webmin_version_set.rc == 0"
 
 - name: Set bash as default shell
   lineinfile: >
@@ -51,14 +39,11 @@
     regexp=^unix_shell=
     line=unix_shell=/bin/bash
 
-- name: CHECK if virtualmin features are already disabled
-  shell: grep '^plugins=virtualmin-htpasswd$' /etc/webmin/virtual-server/config
-  register: virtual_modules_disabled
-  changed_when: "virtual_modules_disabled.rc != 0"
-
 - name: Disable awstats, webalizer, mailman
-  script: ./roles/virtualmin/scripts/disable_virtualmin_features.sh
-  changed_when: "virtual_modules_disabled.rc != 0"
+  lineinfile: >
+      dest=/etc/webmin/virtual-server/config
+      regexp=^plugins=.*
+      line=plugins=virtualmin-htpasswd
 
 - name: Start the webmin service.
   service:
