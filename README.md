@@ -80,6 +80,7 @@ https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventor
 * Add tig, rake, curl etc to all hosts (in new fullstack role)
 * Setup up optional nginx to fullstack role and configure as needed (via docker?)
 * Set up optional installation of PHP 5.6 to fullstack role via PPA (via docker?)
+* Mailcatcher on stage and dev environments
 * In project vars set location of website git repo
 * Set up drush scripts in ~/.drush/scripts directories for push/pull between sites
 * Set up virtualmin backup configuration (new host) and provide backup options in project vars
