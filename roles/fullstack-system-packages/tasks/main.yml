@@ -5,3 +5,12 @@
 
 - name: "Install tig"
   apt: pkg=tig state=present
+
+- name: "Install curl"
+  apt: pkg=curl state=present
+
+- name: "Install php5-curl"
+  apt: pkg=php5-curl state=present
+
+- name: "Install rake"
+  apt: pkg=rake state=present
