@@ -1,0 +1,7 @@
+---
+
+- name: "Install Git"
+  apt: pkg=git state=present
+
+- name: "Install tig"
+  apt: pkg=tig state=present

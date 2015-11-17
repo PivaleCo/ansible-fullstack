@@ -2,6 +2,7 @@
 - hosts: multi
   roles:
   - virtualmin
+  - fullstack-system-packages
 - hosts: prod
   roles:
   - virtualmin-prod
