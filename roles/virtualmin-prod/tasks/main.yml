@@ -2,4 +2,7 @@
 
 - name: Create prod virtual-server
   script: ../scripts/create_prod.sh creates=/home/prod
-
+- name: Configure prod virtual-server
+  script: ../scripts/configure_prod.sh creates=/home/prod/.dotfiles
+  become: yes
+  become_user: prod
