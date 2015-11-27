@@ -5,7 +5,7 @@
   args:
     creates: /home/{{ virtualmin_user }}
 
-- name: Get dotfiles
+- name: Get dotfiles for {{ virtualmin_user }} user
   git:
     repo: git://github.com/reallifedesign/dotfiles
     dest: /home/{{ virtualmin_user }}/.dotfiles
@@ -16,7 +16,7 @@
   become_user: "{{ virtualmin_user }}"
   register: dotfiles_exists
 
-- name: Install dotfiles
+- name: Install dotfiles for {{ virtualmin_user }} user
   shell: "rake -f Rakefile.auto install"
   args:
     chdir: /home/{{ virtualmin_user }}/.dotfiles
