@@ -4,9 +4,13 @@
 [prod]
 prod.EXAMPLE.COM ansible_ssh_user=root
 
+[stage]
+prod.EXAMPLE.COM ansible_ssh_user=root
+
 [dev]
 dev.EXAMPLE.COM ansible_ssh_user=root
 
 [multi:children]
 prod
+stage
 dev
