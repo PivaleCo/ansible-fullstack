@@ -70,10 +70,9 @@ https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventor
 * It's recommended to set "Password storage mode" to "Only store hashed passwords"
 
 ## TODOS:
-* Create a virtual-dev role with stage and dev users
+* Update 123456789 passwords with a way to dynamically generate and store a local copy for reference
 * Stored hashed passwords at top level in a project level vars file (with example and gigignore for the referenced file)
 * Add docs in README.md on how to generate hashed passwords for updating that vars file
-* Add dotfiles to each host and user
 * Generate SSH keys for each enviroment and create playbook to pull copies of the keys locally so they can by copied to git configuration
 * Add contrib roles for redis, git, imagemagick to all hosts (or add to fullstack role if cleaner)
 * Create a project var to optionally install redis- update docs

@@ -23,3 +23,22 @@
   become: yes
   become_user: "{{ virtualmin_user }}"
   when: dotfiles_exists.changed
+
+- name: Create ssh key for {{ virtualmin_user }}
+  shell: "ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''"
+  become: yes
+  become_user: "{{ virtualmin_user }}"
+  args:
+    creates: /home/{{ virtualmin_user }}/.ssh/id_rsa
+
+- name: Fetch ssh public key for {{ virtualmin_user }}
+  tags: test
+  fetch:
+  args:
+    dest: fetched/ssh_keys/{{ virtualmin_user }}/id_rsa.pub
+    src: /home/{{ virtualmin_user }}/.ssh/id_rsa.pub
+    fail_on_missing: yes
+    flat: yes
+    validate_checksum: yes
+
+
