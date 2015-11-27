@@ -30,7 +30,7 @@
     creates: /home/{{ virtualmin_user }}
 
 # Leave password file in place so the password creation task doesn't fire.
-- name: Remove cleartext password temporary file
+- name: Remove cleartext password temporary file for {{ virtualmin_user }} user
   shell: "cat /dev/null > /root/passwords/{{ virtualmin_user }}"
   when: ('{{ virtualmin_user_password.stdout }}' != '' and remove_user_passwords == true)
 

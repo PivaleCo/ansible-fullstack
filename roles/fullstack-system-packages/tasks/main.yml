@@ -45,3 +45,36 @@
     - "cd /usr/local/src/drush && composer install"
   when:
     - ('{{ drush_current_version.stdout }}' != '{{ drush_version }}')
+
+- name: Create a password for root
+  shell: "{{ item }}"
+  with_items:
+    - "mkdir -p /root/passwords"
+    - "makepasswd -chars {{ password_chars }} > /root/passwords/root"
+    - "chmod 700 /root/passwords/root"
+  args:
+    creates: /root/passwords/root
+
+- name: Get password for root
+  shell: "cat /root/passwords/root"
+  changed_when: false
+  register: root_password
+
+- name: Set root password
+  shell: "echo root:$(cat /root/passwords/root) | chpasswd"
+  when: "root_password.stdout != ''"
+
+- name: Fetch password for root
+  fetch:
+  args:
+    dest: fetched/passwords/root
+    src: /root/passwords/root
+    fail_on_missing: yes
+    flat: yes
+    validate_checksum: yes
+  when: "root_password.stdout != ''"
+
+# Leave password file in place so the password creation task doesn't fire.
+- name: Remove cleartext password temporary file
+  shell: "cat /dev/null > /root/passwords/root"
+  when: ('{{ root_password.stdout }}' != '' and remove_user_passwords == true)
