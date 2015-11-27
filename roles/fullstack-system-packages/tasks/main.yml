@@ -14,3 +14,32 @@
 
 - name: "Install rake"
   apt: pkg=rake state=present
+
+- name: "Install composer"
+  shell: "curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer"
+  args:
+    creates: /usr/local/bin/composer
+
+- name: "Install drush"
+  tags: drush
+  shell: "{{ item }}"
+  with_items:
+    - "git clone https://github.com/drush-ops/drush.git /usr/local/src/drush"
+    - "ln -sf /usr/local/src/drush/drush /usr/local/bin/drush"
+  args:
+    creates: /usr/local/bin/drush
+
+- name: "Get current drush version"
+  tags: drush
+  shell: "drush --version | cut -f2 -d ':' | xargs"
+  changed_when: false
+  register: drush_current_version
+
+- name: "Update drush version"
+  tags: drush
+  shell: "{{ item }}"
+  with_items:
+    - "cd /usr/local/src/drush && git checkout {{ drush_version }}"
+    - "cd /usr/local/src/drush && composer install"
+  when:
+    - ('{{ drush_current_version.stdout }}' != '{{ drush_version }}')

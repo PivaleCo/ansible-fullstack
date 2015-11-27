@@ -32,7 +32,6 @@
     creates: /home/{{ virtualmin_user }}/.ssh/id_rsa
 
 - name: Fetch ssh public key for {{ virtualmin_user }}
-  tags: test
   fetch:
   args:
     dest: fetched/ssh_keys/{{ virtualmin_user }}/id_rsa.pub
