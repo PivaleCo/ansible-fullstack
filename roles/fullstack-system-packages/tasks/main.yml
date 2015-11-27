@@ -1,4 +1,6 @@
 ---
+- name: "Install makepasswd"
+  apt: pkg=makepasswd state=present
 
 - name: "Install Git"
   apt: pkg=git state=present

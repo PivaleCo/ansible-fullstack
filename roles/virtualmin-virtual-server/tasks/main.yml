@@ -1,9 +1,38 @@
 ---
 
+- name: Create a password for {{ virtualmin_user }} user
+  shell: "{{ item }}"
+  with_items:
+    - "mkdir -p /root/passwords"
+    - "makepasswd -chars {{ password_chars }} > /root/passwords/{{ virtualmin_user }}"
+    - "chmod 700 /root/passwords/{{ virtualmin_user }}"
+  args:
+    creates: /root/passwords/{{ virtualmin_user }}
+
+- name: Get password for {{ virtualmin_user }} user
+  shell: "cat /root/passwords/{{ virtualmin_user }}"
+  changed_when: false
+  register: virtualmin_user_password
+
+- name: Fetch password for {{ virtualmin_user }} user
+  fetch:
+  args:
+    dest: fetched/passwords/{{ virtualmin_user }}
+    src: /root/passwords/{{ virtualmin_user }}
+    fail_on_missing: yes
+    flat: yes
+    validate_checksum: yes
+  when: "virtualmin_user_password.stdout != ''"
+
 - name: Create {{ virtualmin_user }} virtual-server
-  shell: "virtualmin create-domain --domain {{ virtualmin_user }}.$(hostname -a) --pass 123456789 --ssl --default-features"
+  shell: "virtualmin create-domain --domain {{ virtualmin_user }}.$(hostname -a) --pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
   args:
     creates: /home/{{ virtualmin_user }}
+
+# Leave password file in place so the password creation task doesn't fire.
+- name: Remove cleartext password temporary file
+  shell: "cat /dev/null > /root/passwords/{{ virtualmin_user }}"
+  when: ('{{ virtualmin_user_password.stdout }}' != '' and remove_user_passwords == true)
 
 - name: Get dotfiles for {{ virtualmin_user }} user
   git:
@@ -39,5 +68,3 @@
     fail_on_missing: yes
     flat: yes
     validate_checksum: yes
-
-

@@ -1,1 +1,6 @@
+# Settings
+password_chars: 24
 drush_version: 8.0.0
+
+# Advanced options
+remove_user_passwords: yes
