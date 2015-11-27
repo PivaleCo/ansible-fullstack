@@ -1,21 +1,36 @@
 ---
+- name: "apt-get update"
+  apt: update_cache=yes
+
 - name: "Install makepasswd"
-  apt: pkg=makepasswd state=present
+  apt: pkg=makepasswd state=latest
 
 - name: "Install Git"
-  apt: pkg=git state=present
+  apt: pkg=git state=latest
 
 - name: "Install tig"
-  apt: pkg=tig state=present
+  apt: pkg=tig state=latest
 
 - name: "Install curl"
-  apt: pkg=curl state=present
+  apt: pkg=curl state=latest
 
 - name: "Install php5-curl"
-  apt: pkg=php5-curl state=present
+  apt: pkg=php5-curl state=latest
 
 - name: "Install rake"
-  apt: pkg=rake state=present
+  apt: pkg=rake state=latest
+
+- name: "Ensure optional system packages are installed as defined in config"
+  tags: test
+  with_items: "{{ packages }}"
+  apt: pkg="{{ item.package }}" state=present
+  when: item.install == True
+
+- name: "Remove optional system packages that have been removed from config"
+  tags: test
+  with_items: "{{ packages }}"
+  apt: pkg="{{ item.package }}" state=absent
+  when: item.install == False
 
 - name: "Install composer"
   shell: "curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer"

@@ -1,6 +1,20 @@
-# Settings
+# Settings and variables
+
+# How many chars to use when creating passwords
 password_chars: 24
+
+# Drush version to checkout
 drush_version: 8.0.0
 
-# Advanced options
+# Blank out user passwords from /root/passwords once fetched to local
 remove_user_passwords: yes
+
+# Optional system packages.
+# To disable change install to no and run setup.yml playbook
+packages:
+- package: "php5-redis"
+  install: yes
+- package: "redis-server"
+  install: yes
+- package: "imagemagick"
+  install: yes

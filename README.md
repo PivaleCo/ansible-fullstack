@@ -7,22 +7,7 @@ Created for ease of provisioning Full Stack Drupal applications.
 "Full Stack" here means everything required to have a unified production, staging
 and development enviroments set up for a Drupal 7 project.
 
-## Preparation
-
-The Full Stack install process requires that some secure passwords are used.
-Generate and prepare some secure passwords for the following:
-
-* Root passwords:
-    * root password for prod server
-    * root password for dev server
-* Linux user passwords:
-    * password for prod user
-    * password for stage user
-    * password for dev user
-    
-__Pro-tip: Use an encrypted password manager such as [Keepass](http://keepass.info/)__
-
-## Install instructions
+### Install instructions
 
 ### Install ansible from manager machine
 
@@ -50,6 +35,10 @@ cp example.hosts hosts
 nano hosts
 ```
 
+### Alter the install options file
+
+* Edit the group_vars/all/vars.yml file as required.
+
 ### Run the setup playbook
 
 ```
@@ -69,14 +58,13 @@ https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventor
 * Set the MySQL root password to the same as the server's root password.
 * It's recommended to set "Password storage mode" to "Only store hashed passwords"
 
+### Copy the passwords and SSH keys to somewhere safe
+
+* The passwords and SSH keys for the various user accounts (including root) have now been fetched to the fetched directory.
+* For the SSH keys, make sure these are added to your git repositories.
+* __Pro-tip: Use an encrypted password manager such as [Keepass](http://keepass.info/)__
+
 ## TODOS:
-* Update 123456789 passwords with a way to dynamically generate and store a local copy for reference
-* Stored hashed passwords at top level in a project level vars file (with example and gigignore for the referenced file)
-* Add docs in README.md on how to generate hashed passwords for updating that vars file
-* Generate SSH keys for each enviroment and create playbook to pull copies of the keys locally so they can by copied to git configuration
-* Add contrib roles for redis, git, imagemagick to all hosts (or add to fullstack role if cleaner)
-* Create a project var to optionally install redis- update docs
-* Add tig, rake, curl etc to all hosts (in new fullstack role)
 * Setup up optional nginx to fullstack role and configure as needed (via docker?)
 * Set up optional installation of PHP 5.6 to fullstack role via PPA (via docker?)
 * Mailcatcher on stage and dev environments
