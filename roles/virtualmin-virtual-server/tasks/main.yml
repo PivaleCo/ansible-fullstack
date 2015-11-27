@@ -1,0 +1,25 @@
+---
+
+- name: Create {{ virtualmin_user }} virtual-server
+  shell: "virtualmin create-domain --domain {{ virtualmin_user }}.$(hostname -a) --pass 123456789 --ssl --default-features"
+  args:
+    creates: /home/{{ virtualmin_user }}
+
+- name: Get dotfiles
+  git:
+    repo: git://github.com/reallifedesign/dotfiles
+    dest: /home/{{ virtualmin_user }}/.dotfiles
+    update: yes
+    accept_hostkey: yes
+    update: no
+  become: yes
+  become_user: "{{ virtualmin_user }}"
+  register: dotfiles_exists
+
+- name: Install dotfiles
+  shell: "rake -f Rakefile.auto install"
+  args:
+    chdir: /home/{{ virtualmin_user }}/.dotfiles
+  become: yes
+  become_user: "{{ virtualmin_user }}"
+  when: dotfiles_exists.changed

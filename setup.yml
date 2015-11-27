@@ -1,8 +1,18 @@
 ---
+
 - hosts: multi
   roles:
   - virtualmin
   - fullstack-system-packages
+
 - hosts: prod
   roles:
-  - virtualmin-prod
+  - { role: virtualmin-virtual-server, virtualmin_user: prod }
+
+- hosts: stage
+  roles:
+  - { role: virtualmin-virtual-server, virtualmin_user: stage }
+
+- hosts: dev
+  roles:
+  - { role: virtualmin-virtual-server, virtualmin_user: dev }
