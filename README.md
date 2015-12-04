@@ -66,6 +66,7 @@ https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventor
 
 ## TODOS:
 * Setup up optional nginx to fullstack role and configure as needed (via docker?)
+* Apache Solr provisioning
 * Set up optional installation of PHP 5.6 to fullstack role via PPA (via docker?)
 * Mailcatcher on stage and dev environments
 * In project vars set location of website git repo
