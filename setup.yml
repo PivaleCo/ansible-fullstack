@@ -2,22 +2,20 @@
 
 - hosts: multi
   roles:
-  - virtualmin
-  - fullstack-system-packages
+  - { role: virtualmin }
+  - { role: fullstack-system-packages }
+  - { role: geerlingguy.redis, when: install_redis }
 
 # Loops with dictionaries not current possible in Ansible
 # so have to manually loop each environment in turn
 - hosts: prod
   roles:
   - { role: virtualmin-virtual-server, virtualmin_user: prod }
-  - { role: geerlingguy.redis, when: install_redis }
 
 - hosts: stage
   roles:
   - { role: virtualmin-virtual-server, virtualmin_user: stage }
-  - { role: geerlingguy.redis, when: install_redis }
 
 - hosts: dev
   roles:
   - { role: virtualmin-virtual-server, virtualmin_user: dev }
-  - { role: geerlingguy.redis, when: install_redis }
