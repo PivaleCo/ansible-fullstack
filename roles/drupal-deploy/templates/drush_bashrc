@@ -3,5 +3,5 @@ function echo_header () {
 }
 
 if [ -d ~/.drush/scripts ]; then
-  for f in ~/.drush/scripts; do source $f; done
+  for f in ~/.drush/scripts/*; do source $f; done
 fi
