@@ -1,0 +1,15 @@
+---
+
+# Loops with dictionaries not current possible in Ansible
+# so have to manually loop each environment in turn
+- hosts: prod
+  roles:
+  - { role: drupal-deploy, user: prod }
+
+- hosts: stage
+  roles:
+  - { role: drupal-deploy, user: stage }
+
+- hosts: dev
+  roles:
+  - { role: drupal-deploy, user: dev }

@@ -31,14 +31,14 @@ packages:
 
 environments:
   prod:
-    name: 'Production'
+    # Don't set remote_envs for prod so it remains isolated
+    # I.e. There are no drush sync scripts required upsteam to prod
+    remote_envs:
   stage:
-    name: 'Staging'
     remote_envs:
       - dev
       - prod
   dev:
-    name: 'Development'
     remote_envs:
       - stage
       - prod
