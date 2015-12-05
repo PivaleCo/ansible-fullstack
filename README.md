@@ -65,12 +65,12 @@ https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventor
 * __Pro-tip: Use an encrypted password manager such as [Keepass](http://keepass.info/)__
 
 ## TODOS:
-* Setup up optional nginx to fullstack role and configure as needed (via docker?)
-* Apache Solr provisioning
-* Set up optional installation of PHP 5.6 to fullstack role via PPA (via docker?)
 * Mailcatcher on stage and dev environments
 * In project vars set location of website git repo
 * Set up drush scripts in ~/.drush/scripts directories for push/pull between sites
+* Setup up optional nginx to fullstack role and configure as needed (via docker?)
+* Check Apache Solr configuration
+* Set up optional installation of PHP 5.6 to fullstack role via PPA (via docker?)
 * Set up virtualmin backup configuration (new host) and provide backup options in project vars
 * Add heal script to setup playbook
 * Setup ufw for all hosts
