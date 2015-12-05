@@ -8,11 +8,12 @@
 - hosts: prod
   roles:
   - { role: virtualmin-virtual-server, virtualmin_user: prod }
+  - { role: geerlingguy.redis, when: install_redis }
 
 - hosts: stage
   roles:
-  - { role: virtualmin-virtual-server, virtualmin_user: stage }
+  - { role: geerlingguy.redis, when: install_redis }
 
 - hosts: dev
   roles:
-  - { role: virtualmin-virtual-server, virtualmin_user: dev }
+  - { role: geerlingguy.redis, when: install_redis }

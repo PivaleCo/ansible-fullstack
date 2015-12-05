@@ -15,6 +15,8 @@ install_docker: yes
 # (will skip if install_docker is set to no)
 install_solr: yes
 
+install_redis: yes
+
 # Optional system packages.
 # To disable change install to no and run setup.yml playbook
 packages:
