@@ -1,0 +1,7 @@
+function echo_header () {
+  echo -e "\n******************************\n$1\n******************************\n"
+}
+
+if [ -d ~/.drush/scripts ]; then
+  for f in ~/.drush/scripts; do source $f; done
+fi

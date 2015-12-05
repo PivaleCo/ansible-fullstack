@@ -1,5 +1,7 @@
 # Settings and variables
 
+project_name: msfoodtech
+
 # How many chars to use when creating passwords
 password_chars: 24
 
@@ -26,3 +28,17 @@ packages:
   install: yes
 - package: "imagemagick"
   install: yes
+
+environments:
+  prod:
+    name: 'Production'
+  stage:
+    name: 'Staging'
+    remote_envs:
+      - dev
+      - prod
+  dev:
+    name: 'Development'
+    remote_envs:
+      - stage
+      - prod

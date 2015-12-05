@@ -1,0 +1,26 @@
+---
+
+- name: Create ~/.drush directory
+  tags: deploy
+  file: path=~/.drush state=directory
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Create ~/.drush/scripts directory
+  tags: deploy
+  file: path=~/.drush/scripts state=directory
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Create ~/.drush/drush_bashrc file
+  tags: deploy
+  template: src=../templates/drush_bashrc dest=~/.drush/drush_bashrc
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Create ~/.drush/scripts/* files
+  tags: deploy
+  template: src=../templates/drush_pull_script dest=~/.drush/scripts/{{ item }}
+  with_items: "{{ environments[user].remote_envs }}"
+  become: yes
+  become_user: "{{ user }}"

@@ -1,0 +1,34 @@
+function pull{{ item }}{{ project_name }}() {
+  echo_header "Changing to root project directory"
+  cdx 4
+
+  echo_header "Dropping and recreating database"
+  drush sql-drop --yes
+
+  REDIS_INSTALLED=$(which redis-cli | wc -l)
+  if [ $REDIS_INSTALLED == 1 ]; then
+    echo_header "Flushing redis cache"
+    redis-cli flushdb
+  fi
+
+  echo_header "Syncronising database"
+  drush -y sql-sync --no-cache --sanitize @{{ item }}.{{ project_name }} @local.{{ project_name }}
+
+  #echo_header "Clearing local files directory", but not the .htaccess file
+  #rm -Rf sites/default/files/*
+
+  #echo_header "Setting up stage_file_proxy"
+  #drush -y en stage_file_proxy
+  #drush vset stage_file_proxy_origin "https://example.com"
+
+  echo_header "Syncronising files directory"
+  drush -y rsync --delete @{{ item }}.{{ project_name }}:%files/ @local.{{ project_name }}:%files
+
+  echo_header "Changing webmaster password"
+  drushpw
+
+  echo_header "Clearing all caches"
+  drush cc all
+
+  echo_header "Done"
+}

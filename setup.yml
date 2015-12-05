@@ -5,6 +5,8 @@
   - virtualmin
   - fullstack-system-packages
 
+# Loops with dictionaries not current possible in Ansible
+# so have to manually loop each environment in turn
 - hosts: prod
   roles:
   - { role: virtualmin-virtual-server, virtualmin_user: prod }
@@ -13,7 +15,9 @@
 - hosts: stage
   roles:
   - { role: geerlingguy.redis, when: install_redis }
+  - { role: drupal-deploy, user: stage }
 
 - hosts: dev
   roles:
   - { role: geerlingguy.redis, when: install_redis }
+  - { role: drupal-deploy, user: dev }
