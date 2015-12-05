@@ -93,3 +93,43 @@
 - name: Remove cleartext password temporary file
   shell: "cat /dev/null > /root/passwords/root"
   when: ('{{ root_password.stdout }}' != '' and remove_user_passwords == true)
+
+# Docker
+
+- name: Add docker apt keys
+  apt_key: keyserver=hkp://p80.pool.sks-keyservers.net:80 id=58118E89F3A912897C070ADBF76221572C52609D
+  when: install_docker
+
+- name: Add docker repository
+  apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present
+  when: install_docker
+
+- name: Install docker
+  apt: pkg=docker-engine update_cache=yes
+  when: install_docker
+
+- name: Install pip
+  apt: pkg=python-pip
+
+- name: Install docker-py with pip
+  pip: name=docker-py
+  tags: docker
+  when: install_docker
+
+# Solr
+
+- name: Solr container
+  when: install_solr and install_docker
+  tags: solr
+  docker:
+    name: apachesolr-5
+    image: mxr576/apachesolr-5.x-drupal-docker
+    ports:
+      - "8983:8983"
+    env:
+      SOLR_MEM_SIZE: 1g
+    volumes:
+      - /opt/solr/server/solr/drupal/data:/opt/solr/server/solr/drupal/data
+      - /opt/solr/server/solr/drupal/conf:/opt/solr/server/solr/drupal/conf
+      - /var/log/supervisor/
+    state: reloaded

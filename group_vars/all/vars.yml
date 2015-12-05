@@ -9,6 +9,12 @@ drush_version: 8.0.0
 # Blank out user passwords from /root/passwords once fetched to local
 remove_user_passwords: yes
 
+install_docker: yes
+
+# Solr requires docker to be installed
+# (will skip if install_docker is set to no)
+install_solr: yes
+
 # Optional system packages.
 # To disable change install to no and run setup.yml playbook
 packages:
