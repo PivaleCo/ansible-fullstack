@@ -30,7 +30,7 @@
 # Install Drupal
 
 - name: Add git repository for project
-  git: accept_hostkey=yes
+  git: accept_hostkey=True
        repo={{ project_repo }}
        dest=/home/"{{ user }}"/git
        version=master
@@ -48,3 +48,8 @@
 - name: Remove public_html directory and replace with a link to git/www
   file: src=/home/{{ user }}/git/www dest=/home/{{ user }}/public_html state=link force=true
   when: sym.stat.islnk is defined and sym.stat.islnk == False
+
+- name: Copy site/default/local.settings.php file
+  template: src=local.settings.php dest="/home/{{ user }}/git/www/sites/default/local.settings.php" mode="u=r,g=r,o="
+  become: yes
+  become_user: "{{ user }}"

@@ -1,5 +1,8 @@
 ---
 
+- name: If virtualhost {{ virtualmin_user }} doesn't exists then remove password file
+  shell: "if [ ! -d /home/{{ virtualmin_user }} ]; then rm -f /root/passwords/{{ virtualmin_user }}; fi"
+
 - name: Create a password for {{ virtualmin_user }} user
   shell: "{{ item }}"
   with_items:
@@ -25,21 +28,21 @@
   when: "virtualmin_user_password.stdout != ''"
 
 - name: Create subdomain {{ virtualmin_user }} virtual-server
-  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain {{ virtualmin_user }}.$(hostname -a) --pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
+  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain {{ virtualmin_user }}.$(hostname -a) --pass {{ virtualmin_user_password.stdout }} --mysql-pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
   args:
     creates: /home/{{ virtualmin_user }}
   when: "'{{ virtualmin_user }}' != 'prod'"
 
 - name: Create main production {{ virtualmin_user }} virtual-server
-  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain $(hostname -a) --pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
+  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain $(hostname -a) --pass {{ virtualmin_user_password.stdout }} --mysql-pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
   args:
     creates: /home/{{ virtualmin_user }}
   when: "'{{ virtualmin_user }}' == 'prod'"
 
-# Leave password file in place so the password creation task doesn't fire.
-- name: Remove cleartext password temporary file for {{ virtualmin_user }} user
-  shell: "cat /dev/null > /root/passwords/{{ virtualmin_user }}"
-  when: ('{{ virtualmin_user_password.stdout }}' != '' and remove_user_passwords == true)
+# Delete passwords on server - Leave password file in place so the password creation task doesn't fire.
+#- name: Remove cleartext password temporary file for {{ virtualmin_user }} user
+#  shell: "cat /dev/null > /root/passwords/{{ virtualmin_user }}"
+#  when: ('{{ virtualmin_user_password.stdout }}' != '' and remove_user_passwords == true)
 
 - name: Get dotfiles for {{ virtualmin_user }} user
   git:

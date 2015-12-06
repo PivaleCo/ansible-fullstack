@@ -5,7 +5,7 @@ $databases['default']['default'] = array(
   'driver' => 'mysql',
   'database' => '{{ user }}',
   'username' => '{{ user }}',
-  'password' => 'DB_PASS',
+  'password' => '{{ lookup("file", "fetched/passwords/" + user) }}',
   'host' => 'localhost',
 );
 
@@ -19,10 +19,10 @@ $site_aliases['local'] = array(
 if (isset($conf)) {
 
   $conf = array(
-    'environment_indicator_overwritten_color' => "{{ item.color }}",
+    'environment_indicator_overwritten_color' => "{{ environments[user].color }}",
     'environment_indicator_overwrite' => "1",
     'environment_indicator_overwritten_position' => "top",
-    'environment_indicator_overwritten_name' => strtoupper("{{ item.name }}"),
+    'environment_indicator_overwritten_name' => "{{ environments[user].name | upper }}",
   ) + $conf;
 
   //$conf['page_compression'] = 0;
@@ -44,7 +44,7 @@ if (!array_key_exists('redis_client_host', $conf)) {
   if (!in_array($_GET['q'], $exclude_cache_paths)) {
     $conf['redis_client_host'] = '127.0.0.1';
     $conf['redis_client_port'] = 6379;
-    $conf['redis_client_base'] = {{ item.redis_db }};
+    $conf['redis_client_base'] = {{ environments[user].redis_db }};
     $conf['lock_inc'] = 'sites/all/modules/redis/redis.lock.inc';
     $conf['path_inc'] = 'sites/all/modules/redis/redis.path.inc';
     $conf['path_alias_admin_blacklist'] = TRUE;
