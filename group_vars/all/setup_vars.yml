@@ -1,7 +1,5 @@
 # Settings and variables
 
-project_name: msfoodtech
-
 # How many chars to use when creating passwords
 password_chars: 24
 
@@ -24,21 +22,28 @@ install_redis: yes
 packages:
 - package: "php5-redis"
   install: yes
-- package: "redis-server"
-  install: yes
 - package: "imagemagick"
   install: yes
 
 environments:
   prod:
+    name: Production
+    redis_db: 1
+    color: "#c00"
     # Don't set remote_envs for prod so it remains isolated
     # I.e. There are no drush sync scripts required upsteam to prod
     remote_envs:
   stage:
+    name: Staging
+    redis_db: 2
+    color: "#00c"
     remote_envs:
       - dev
       - prod
   dev:
+    name: Development
+    redis_db: 3
+    color: "#0c0"
     remote_envs:
       - stage
       - prod

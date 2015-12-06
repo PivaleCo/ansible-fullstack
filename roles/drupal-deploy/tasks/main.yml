@@ -1,5 +1,7 @@
 ---
 
+# Install drush helper scripts for all environments except prod
+
 - name: Create ~/.drush directory
   file: path=~/.drush state=directory
   become: yes
@@ -24,3 +26,25 @@
   become: yes
   become_user: "{{ user }}"
   when: user != 'prod'
+
+# Install Drupal
+
+- name: Add git repository for project
+  git: accept_hostkey=yes
+       repo={{ project_repo }}
+       dest=/home/"{{ user }}"/git
+       version=master
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Check if public_html is a link
+  stat: path=/home/{{ user }}/public_html
+  register: sym
+
+- name: Remove public_html as a directory
+  file: path=/home/{{ user }}/public_html state=absent force=true
+  when: sym.stat.islnk is defined and sym.stat.islnk == False
+
+- name: Remove public_html directory and replace with a link to git/www
+  file: src=/home/{{ user }}/git/www dest=/home/{{ user }}/public_html state=link force=true
+  when: sym.stat.islnk is defined and sym.stat.islnk == False
