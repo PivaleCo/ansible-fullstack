@@ -53,3 +53,16 @@
   template: src=local.settings.php dest="/home/{{ user }}/git/www/sites/default/local.settings.php" mode="u=r,g=r,o="
   become: yes
   become_user: "{{ user }}"
+
+- name: Copy database ready for import
+  copy: src=deploy/db.sql.gz dest=/tmp/db.sql.gz force=no mode="u=rwx,g=rwx,o=rwx"
+
+- name: Gunzip the sql.gz database
+  shell: "gunzip -fk /tmp/db.sql.gz"
+  args:
+    creates: /tmp/db.sql
+
+- name: Import database to {{ user }} database
+  mysql_db: name="{{ user }}" state=import target=/tmp/db.sql login_user="{{ user }}" login_password="{{ lookup("file", "fetched/passwords/" + user) }}"
+  become: yes
+  become_user: "{{ user }}"

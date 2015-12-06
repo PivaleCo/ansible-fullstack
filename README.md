@@ -35,9 +35,9 @@ cp example.hosts hosts
 nano hosts
 ```
 
-### Alter the install options file
+### Alter the setup variables file
 
-* Edit the group_vars/all/vars.yml file as required.
+* Edit the group_vars/all/setup_vars.yml file as required.
 
 ### Run the setup playbook
 
@@ -64,8 +64,25 @@ https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventor
 * For the SSH keys, make sure these are added to your git repositories.
 * __Pro-tip: Use an encrypted password manager such as [Keepass](http://keepass.info/)__
 
+### Alter the deploy variables file
+
+* Edit the group_vars/all/deploy_vars.yml file as required.
+
+### For first time deployments drop db.sql.gz and files.tar.gz in the deploy directory
+
+* deploy/db.sql.gz should be a gzipped sql dump of the database to import on all environments
+* deploy/files.tar.gz should be a gzip file with the sites/default/files contents to import on all environments
+
+### Run the deploy playbook
+
+```
+ansible-playbook deploy.yml
+```
+
+* Check for errors in the PLAY RECAP
+* If the play hangs on git commands then it could be due to the remote repository not being accessible- ensure the SSH public keys are copied correctly as above
+
 ## TODOS:
-* Deploy local.settings.php templates with database passwords
 * Add heal script to setup playbook
 * Setup ufw for all hosts
 * Mailcatcher on stage and dev environments

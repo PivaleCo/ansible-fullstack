@@ -20,6 +20,9 @@
 - name: "Install rake"
   apt: pkg=rake state=latest
 
+- name: "Install python-mysqldb"
+  apt: pkg=python-mysqldb state=latest
+
 - name: "Ensure optional system packages are installed as defined in config"
   tags: test
   with_items: "{{ packages }}"

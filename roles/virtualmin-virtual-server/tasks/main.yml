@@ -1,6 +1,6 @@
 ---
 
-- name: If virtualhost {{ virtualmin_user }} doesn't exists then remove password file
+- name: If virtualhost {{ virtualmin_user }} doesn't exist then remove password file
   shell: "if [ ! -d /home/{{ virtualmin_user }} ]; then rm -f /root/passwords/{{ virtualmin_user }}; fi"
 
 - name: Create a password for {{ virtualmin_user }} user
