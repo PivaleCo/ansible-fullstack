@@ -1,14 +1,18 @@
+#
+# Template for hosts inventory file
+#
+# Copy this file to 'hosts' file and update the servers as needed below
 # If the dev host is the same as the prod host, then simply put the same
 # host name under each section.
 
 [prod]
-prod.EXAMPLE.COM ansible_ssh_user=root
+10.0.0.0 hostname=prod-server-example.com ansible_ssh_user=root
 
 [stage]
-prod.EXAMPLE.COM ansible_ssh_user=root
+10.0.0.0 hostname=stage-server-example.com ansible_ssh_user=root
 
 [dev]
-dev.EXAMPLE.COM ansible_ssh_user=root
+10.0.0.0 hostname=dev-server-example.com ansible_ssh_user=root
 
 [multi:children]
 prod

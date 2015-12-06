@@ -1,5 +1,8 @@
 ---
 
+- name: Set hostname
+  hostname: name="{{ hostname }}"
+
 - name: Install virtualmin.
   script: >
     ../scripts/virtualmin-install.sh -y
