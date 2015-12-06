@@ -45,6 +45,11 @@
       regexp=^plugins=.*
       line=plugins=virtualmin-htpasswd
 
+- name: Disable apache's default virtualhost
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify:
+    - reload apache2
+
 - name: Start the webmin service.
   service:
     name: webmin

@@ -24,10 +24,17 @@
     validate_checksum: yes
   when: "virtualmin_user_password.stdout != ''"
 
-- name: Create {{ virtualmin_user }} virtual-server
-  shell: "virtualmin create-domain --domain {{ virtualmin_user }}.$(hostname -a) --pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
+- name: Create subdomain {{ virtualmin_user }} virtual-server
+  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain {{ virtualmin_user }}.$(hostname -a) --pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
   args:
     creates: /home/{{ virtualmin_user }}
+  when: "'{{ virtualmin_user }}' != 'prod'"
+
+- name: Create main production {{ virtualmin_user }} virtual-server
+  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain $(hostname -a) --pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
+  args:
+    creates: /home/{{ virtualmin_user }}
+  when: "'{{ virtualmin_user }}' == 'prod'"
 
 # Leave password file in place so the password creation task doesn't fire.
 - name: Remove cleartext password temporary file for {{ virtualmin_user }} user

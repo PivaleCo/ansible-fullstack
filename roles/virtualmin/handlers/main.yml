@@ -3,4 +3,9 @@
   service:
     name: webmin
     state: restarted
+- name: reload apache2
+  service:
+    name: apache2
+    state: reloaded
+
 
