@@ -5,7 +5,7 @@ $databases['default']['default'] = array(
   'driver' => 'mysql',
   'database' => '{{ user }}',
   'username' => '{{ user }}',
-  'password' => '{{ lookup("file", "fetched/passwords/" + user) }}',
+  'password' => '{{ lookup("file", "fetched/" + hostname + "/passwords/" + user) }}',
   'host' => 'localhost',
 );
 

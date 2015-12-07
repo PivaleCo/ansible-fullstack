@@ -2,6 +2,7 @@
 
 - name: If virtualhost {{ virtualmin_user }} doesn't exist then remove password file
   shell: "if [ ! -d /home/{{ virtualmin_user }} ]; then rm -f /root/passwords/{{ virtualmin_user }}; fi"
+  changed_when: false
 
 - name: Create a password for {{ virtualmin_user }} user
   shell: "{{ item }}"
@@ -20,7 +21,7 @@
 - name: Fetch password for {{ virtualmin_user }} user
   fetch:
   args:
-    dest: fetched/passwords/{{ virtualmin_user }}
+    dest: fetched/{{ hostname }}/passwords/{{ virtualmin_user }}
     src: /root/passwords/{{ virtualmin_user }}
     fail_on_missing: yes
     flat: yes
@@ -28,21 +29,29 @@
   when: "virtualmin_user_password.stdout != ''"
 
 - name: Create subdomain {{ virtualmin_user }} virtual-server
-  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain {{ virtualmin_user }}.$(hostname -a) --pass {{ virtualmin_user_password.stdout }} --mysql-pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
+  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain {{ virtualmin_user }}.$(hostname -f) --pass {{ virtualmin_user_password.stdout }} --mysql-pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
   args:
     creates: /home/{{ virtualmin_user }}
   when: "'{{ virtualmin_user }}' != 'prod'"
 
 - name: Create main production {{ virtualmin_user }} virtual-server
-  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain $(hostname -a) --pass {{ virtualmin_user_password.stdout }} --mysql-pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
+  shell: "virtualmin create-domain --user {{ virtualmin_user }} --domain $(hostname -f) --pass {{ virtualmin_user_password.stdout }} --mysql-pass {{ virtualmin_user_password.stdout }} --ssl --default-features"
   args:
     creates: /home/{{ virtualmin_user }}
   when: "'{{ virtualmin_user }}' == 'prod'"
 
+- name: Set PHP ini values
+  shell: "{{ item }}"
+  with_items:
+    - "virtualmin modify-php-ini --all-domains --ini-name memory_limit --ini-value {{ php.memory_limit }}"
+    - "virtualmin modify-php-ini --all-domains --ini-name post_max_size --ini-value {{ php.upload_size }}"
+    - "virtualmin modify-php-ini --all-domains --ini-name upload_max_filesize --ini-value {{ php.upload_size }}"
+    - "virtualmin modify-php-ini --all-domains --ini-name max_input_time --ini-value {{ php.max_input_time }}"
+
 # Delete passwords on server - Leave password file in place so the password creation task doesn't fire.
-#- name: Remove cleartext password temporary file for {{ virtualmin_user }} user
-#  shell: "cat /dev/null > /root/passwords/{{ virtualmin_user }}"
-#  when: ('{{ virtualmin_user_password.stdout }}' != '' and remove_user_passwords == true)
+- name: Remove cleartext password temporary file for {{ virtualmin_user }} user
+  shell: "cat /dev/null > /root/passwords/{{ virtualmin_user }}"
+  when: ('{{ virtualmin_user_password.stdout }}' != '' and remove_user_passwords == true)
 
 - name: Get dotfiles for {{ virtualmin_user }} user
   git:
@@ -73,7 +82,7 @@
 - name: Fetch ssh public key for {{ virtualmin_user }}
   fetch:
   args:
-    dest: fetched/ssh_keys/{{ virtualmin_user }}/id_rsa.pub
+    dest: fetched/{{ hostname }}/ssh_keys/{{ virtualmin_user }}/id_rsa.pub
     src: /home/{{ virtualmin_user }}/.ssh/id_rsa.pub
     fail_on_missing: yes
     flat: yes

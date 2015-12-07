@@ -62,7 +62,21 @@
   args:
     creates: /tmp/db.sql
 
-- name: Import database to {{ user }} database
-  mysql_db: name="{{ user }}" state=import target=/tmp/db.sql login_user="{{ user }}" login_password="{{ lookup("file", "fetched/passwords/" + user) }}"
+- name: Check if {{ user }} database already has tables
+  shell: "echo 'use {{ user }}; show tables' | mysql -u {{ user }} -p{{ lookup('file', 'fetched/' + hostname + '/passwords/' + user) }} {{ user }} | wc -l"
+  register: dbstatus
+  changed_when: dbstatus.stdout | int <= 1
+
+- name: Import database to {{ user }} database - once only
+  mysql_db: name="{{ user }}" state=import target=/tmp/db.sql login_user="{{ user }}" login_password="{{ lookup("file", "fetched/" + hostname + "/passwords/" + user) }}"
   become: yes
   become_user: "{{ user }}"
+  when: dbstatus.stdout | int <= 1
+
+- name: Copy Drupal files directory gzip tarball ready for extraction
+  copy: src=deploy/files.tar.gz dest=/tmp/files.tar.gz force=no mode="u=rwx,g=rwx,o=rwx"
+
+- name: Extract Drupal files
+  shell: 'tar xzf /tmp/files.tar.gz -C /home/{{ user }}/git/www/sites/default && chown -R {{ user }}:{{ user }} /home/{{ user }}/git/www/sites/default/files'
+  args:
+    creates: "/home/{{ user }}/git/www/sites/default/files/.htaccess"

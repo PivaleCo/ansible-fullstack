@@ -85,7 +85,7 @@
 - name: Fetch password for root
   fetch:
   args:
-    dest: fetched/passwords/root
+    dest: "fetched/{{ hostname }}/passwords/root"
     src: /root/passwords/root
     fail_on_missing: yes
     flat: yes
