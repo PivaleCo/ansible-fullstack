@@ -42,7 +42,6 @@
 
 - name: Set PHP ini values
   shell: "{{ item }}"
-  tags: test
   with_items:
     - "virtualmin modify-php-ini --all-domains --ini-name memory_limit --ini-value {{ php.memory_limit }}"
     - "virtualmin modify-php-ini --all-domains --ini-name post_max_size --ini-value {{ php.upload_size }}"
