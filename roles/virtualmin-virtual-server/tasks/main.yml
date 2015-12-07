@@ -42,11 +42,13 @@
 
 - name: Set PHP ini values
   shell: "{{ item }}"
+  tags: test
   with_items:
     - "virtualmin modify-php-ini --all-domains --ini-name memory_limit --ini-value {{ php.memory_limit }}"
     - "virtualmin modify-php-ini --all-domains --ini-name post_max_size --ini-value {{ php.upload_size }}"
     - "virtualmin modify-php-ini --all-domains --ini-name upload_max_filesize --ini-value {{ php.upload_size }}"
-    - "virtualmin modify-php-ini --all-domains --ini-name max_input_time --ini-value {{ php.max_input_time }}"
+    - "virtualmin modify-php-ini --all-domains --ini-name max_input_time --ini-value {{ php.timeout }}"
+    - "virtualmin modify-web --all-domains --php-timeout {{ php.timeout }}"
 
 # Delete passwords on server - Leave password file in place so the password creation task doesn't fire.
 - name: Remove cleartext password temporary file for {{ virtualmin_user }} user

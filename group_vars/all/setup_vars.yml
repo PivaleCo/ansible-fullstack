@@ -51,4 +51,4 @@ environments:
 php:
   memory_limit: 2048M
   upload_size: 100M
-  max_input_time: 600
+  timeout: 900
