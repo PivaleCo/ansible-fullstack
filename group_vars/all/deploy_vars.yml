@@ -1,7 +1,7 @@
 # Drupal Project / code deployment variables
 
 # This is used for reference in drush aliases
-project_name: msfoodtech
+project_name:
 
 # Enter the appropraite git connection string that you'd use for the git clone command
-project_repo: gitolite@reallifesites.co.uk:msfoodtech
+project_repo: user@server:repo-name
