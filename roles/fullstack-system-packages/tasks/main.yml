@@ -23,6 +23,12 @@
 - name: "Install php-gd"
   apt: pkg=php-gd state=latest
 
+- name: "Install nodejs"
+  apt: pkg=nodejs state=latest
+
+- name: "Install npm"
+  apt: pkg=npm state=latest
+
 - name: "Install rake"
   apt: pkg=rake state=latest
 
