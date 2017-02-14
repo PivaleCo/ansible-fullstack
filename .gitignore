@@ -1,5 +1,7 @@
 hosts
+*.hosts
 fetched/*
 !fetched/README.md
 deploy/*
 !deploy/README.md
+*.retry

@@ -2,6 +2,9 @@
 - name: "apt-get update"
   apt: update_cache=yes
 
+- name: "Install haveged (makepasswd dependency to prevent freezing)"
+  apt: pkg=haveged state=latest
+
 - name: "Install makepasswd"
   apt: pkg=makepasswd state=latest
 
@@ -14,8 +17,11 @@
 - name: "Install curl"
   apt: pkg=curl state=latest
 
-- name: "Install php5-curl"
-  apt: pkg=php5-curl state=latest
+- name: "Install php-mbstring"
+  apt: pkg=php-mbstring state=latest
+
+- name: "Install php-gd"
+  apt: pkg=php-gd state=latest
 
 - name: "Install rake"
   apt: pkg=rake state=latest
@@ -104,7 +110,7 @@
   when: install_docker
 
 - name: Add docker repository
-  apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present
+  apt_repository: repo='deb https://apt.dockerproject.org/repo {{ ubuntu_version_name }} main' state=present
   when: install_docker
 
 - name: Install docker
@@ -127,6 +133,7 @@
   docker:
     name: apachesolr-5
     image: mxr576/apachesolr-5.x-drupal-docker
+    restart_policy: always
     ports:
       - "8983:8983"
     env:
@@ -135,4 +142,18 @@
       - /opt/solr/server/solr/drupal/data:/opt/solr/server/solr/drupal/data
       - /opt/solr/server/solr/drupal/conf:/opt/solr/server/solr/drupal/conf
       - /var/log/supervisor/
+    state: restarted
+
+# Reload apache
+
+- name: Enable mod_rewrite module
+  apache2_module:
+    state: present
+    name: rewrite
+  tags: apache
+
+- name: Reload apache
+  service:
+    name: apache2
     state: reloaded
+  tags: apache

@@ -28,10 +28,10 @@ where PROD_HOST is the hostname or IP address of the Production server
 and DEV_HOST is the hostname or IP address of the Development server (which has the staging and dev versions of the website)
 
 
-### Copy the `example.hosts` file and edit `hosts` file point at the correct remote servers
+### Copy the `example.hosts` template file to NAME_OF_PROJECT.hosts and edit that file point at the correct remote servers
 
 ```
-cp example.hosts hosts
+cp example.hosts NAME_OF_PROJECT.hosts
 nano hosts
 ```
 
@@ -39,10 +39,16 @@ nano hosts
 
 * Edit the group_vars/all/setup_vars.yml file as required.
 
+### Ensure python and python-simplejson prerequisite on the remote host(s)
+
+```
+ansible -i HOSTFILE multi --sudo -m raw -a "sudo apt-get update && sudo apt-get install -y python-simplejson"
+```
+
 ### Run the setup playbook
 
 ```
-ansible-playbook setup.yml
+ansible-playbook -i NAME_OF_PROJECT.hosts setup.yml
 ```
 
 Check for errors in the PLAY RECAP
@@ -76,7 +82,7 @@ https://DEV_HOST:12340 (if set up as a separate host from prod in hosts inventor
 ### Run the deploy playbook
 
 ```
-ansible-playbook deploy.yml
+ansible-playbook -i NAME_OF_PROJECT.hosts deploy.yml
 ```
 
 * Check for errors in the PLAY RECAP

@@ -1,10 +1,13 @@
 # Settings and variables
 
+# Ubuntu version
+ubuntu_version_name: ubuntu-xenial
+
 # How many chars to use when creating passwords
 password_chars: 24
 
 # Drush version to checkout
-drush_version: 8.0.0
+drush_version: 8.1.0
 
 # Blank out user passwords from /root/passwords once fetched to local
 remove_user_passwords: yes
@@ -20,9 +23,22 @@ install_redis: yes
 # Optional system packages.
 # To disable change install to no and run setup.yml playbook
 packages:
+
+# PHP 5 specific
 - package: "php5-redis"
+  install: no
+- package: "php5-curl"
+  install: no
+
+# PHP 7 specific
+- package: "php-redis"
   install: yes
+- package: "php-curl"
+  install: yes
+
 - package: "imagemagick"
+  install: yes
+- package: "default-jre"
   install: yes
 
 environments:
